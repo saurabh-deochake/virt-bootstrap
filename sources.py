@@ -32,7 +32,7 @@ if os.geteuid() == 0:
     virt_sandbox_connection = "lxc:///"
     default_image_dir = "/var/lib/virt-bootstrap/docker_images"
 else:
-    virt_sandbox_connection = "qemu://session"
+    virt_sandbox_connection = "qemu:///session"
     default_image_dir = \
         os.environ['HOME'] + "/.local/share/virt-bootstrap/docker_images"
 
