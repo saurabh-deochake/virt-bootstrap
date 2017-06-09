@@ -3,6 +3,9 @@
 
 import codecs
 import os
+import sys
+from setuptools import Command
+from subprocess import call
 from setuptools import setup
 
 
@@ -14,6 +17,34 @@ def read(fname):
     with codecs.open(path, encoding='utf-8') as fobj:
         return fobj.read()
 
+
+class CheckPylint(Command):
+    """ Check python source files with pylint and pycodestyle."""
+
+    user_options = []
+    description = "Check code using pylint and pycodestyle"
+
+    def initialize_options(self):
+        """Initialize the options to default values."""
+        pass
+
+    def finalize_options(self):
+        """Check final option values."""
+        pass
+
+    def run(self):
+        """Call pycodestyle and pylint here."""
+
+        files = ' '.join(["setup.py", "src/virtBootstrap/*.py"])
+        output_format = "colorized" if sys.stdout.isatty() else "text"
+
+        print(">>> Running pycodestyle ...")
+        cmd = "pycodestyle "
+        call(cmd + files, shell=True)
+
+        print(">>> Running pylint ...")
+        cmd = "pylint --output-format={} ".format(output_format)
+        call(cmd + files, shell=True)
 
 setup(
     name='virt-bootstrap',
@@ -53,5 +84,15 @@ setup(
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6'
-    ]
+
+    ],
+    cmdclass={
+        'pylint': CheckPylint
+    },
+    extras_require={
+        'dev': [
+            'pylint',
+            'pycodestyle'
+        ]
+    }
 )
