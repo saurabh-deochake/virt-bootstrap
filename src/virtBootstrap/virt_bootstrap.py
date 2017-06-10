@@ -59,12 +59,7 @@ def get_source(args):
     try:
         class_name = "%sSource" % scheme.capitalize()
         clazz = getattr(sources, class_name)
-        return clazz(url,
-                     args.username,
-                     args.password,
-                     args.format,
-                     args.not_secure,
-                     args.no_cache)
+        return clazz(url, args)
     except Exception:
         raise Exception("Invalid image URI scheme: '%s'" % url.scheme)
 

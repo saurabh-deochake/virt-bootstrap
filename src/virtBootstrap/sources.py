@@ -178,7 +178,7 @@ class DockerSource(object):
     Extract files from Docker image
     """
 
-    def __init__(self, url, username, password, fmt, insecure, no_cache):
+    def __init__(self, url, args):
         """
         Bootstrap root filesystem from Docker registry
 
@@ -192,11 +192,11 @@ class DockerSource(object):
 
         self.registry = url.netloc
         self.image = url.path
-        self.username = username
-        self.password = password
-        self.output_format = fmt
-        self.insecure = insecure
-        self.no_cache = no_cache
+        self.username = args.username
+        self.password = args.password
+        self.output_format = args.format
+        self.insecure = args.not_secure
+        self.no_cache = args.no_cache
         if self.image and not self.image.startswith('/'):
             self.image = '/' + self.image
         self.url = "docker://" + self.registry + self.image
