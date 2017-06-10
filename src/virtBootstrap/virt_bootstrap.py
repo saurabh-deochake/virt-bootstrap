@@ -16,6 +16,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+"""
+Main executable file which process input arguments
+and calls corresponding methods on appropriate object.
+"""
+
 import argparse
 import gettext
 import sys
@@ -27,7 +32,7 @@ try:
 except ImportError:
     from urllib.parse import urlparse
 
-import sources
+from virtBootstrap import sources
 
 
 gettext.bindtextdomain("virt-bootstrap", "/usr/share/locale")
@@ -42,6 +47,9 @@ except IOError:
 
 
 def get_source(args):
+    """
+    Get object which match the source type
+    """
     url = urlparse(args.uri)
     scheme = url.scheme
 
@@ -62,15 +70,21 @@ def get_source(args):
 
 
 def set_root_password(rootfs, password):
+    """
+    Set password on the root user in rootfs
+    """
     users = 'root:%s' % password
     args = ['chpasswd', '-R', rootfs]
-    p = Popen(args, stdin=PIPE)
-    p.communicate(input=users)
-    if p.returncode != 0:
-        raise CalledProcessError(p.returncode, cmd=args, output=None)
+    chpasswd = Popen(args, stdin=PIPE)
+    chpasswd.communicate(input=users)
+    if chpasswd.returncode != 0:
+        raise CalledProcessError(chpasswd.returncode, cmd=args, output=None)
 
 
 def bootstrap(args):
+    """
+    Get source object and call unpack method
+    """
     source = get_source(args)
     if not os.path.exists(args.dest):
         os.makedirs(args.dest)
@@ -123,12 +137,11 @@ def main():
         bootstrap(args)
 
         sys.exit(0)
-    except KeyboardInterrupt as e:
+    except KeyboardInterrupt:
         sys.exit(0)
-    except ValueError as e:
-        for line in e:
-            for l in line:
-                sys.stderr.write("%s: %s\n" % (sys.argv[0], l))
+    except ValueError as err:
+        for line in err:
+            sys.stderr.write("%s: %s\n" % (sys.argv[0], line))
         sys.stderr.flush()
         sys.exit(1)
 

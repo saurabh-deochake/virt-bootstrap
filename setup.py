@@ -1,11 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8; -*-
 
+"""
+Setup script used for building, testing, and installing modules
+based on setuptools.
+"""
+
 import codecs
 import os
 import sys
-from setuptools import Command
 from subprocess import call
+from setuptools import Command
 from setuptools import setup
 
 
@@ -19,21 +24,29 @@ def read(fname):
 
 
 class CheckPylint(Command):
-    """ Check python source files with pylint and pycodestyle."""
+    """
+    Check python source files with pylint and pycodestyle.
+    """
 
     user_options = []
     description = "Check code using pylint and pycodestyle"
 
     def initialize_options(self):
-        """Initialize the options to default values."""
+        """
+        Initialize the options to default values.
+        """
         pass
 
     def finalize_options(self):
-        """Check final option values."""
+        """
+        Check final option values.
+        """
         pass
 
     def run(self):
-        """Call pycodestyle and pylint here."""
+        """
+        Call pycodestyle and pylint here.
+        """
 
         files = ' '.join(["setup.py", "src/virtBootstrap/*.py"])
         output_format = "colorized" if sys.stdout.isatty() else "text"
@@ -45,6 +58,7 @@ class CheckPylint(Command):
         print(">>> Running pylint ...")
         cmd = "pylint --output-format={} ".format(output_format)
         call(cmd + files, shell=True)
+
 
 setup(
     name='virt-bootstrap',
